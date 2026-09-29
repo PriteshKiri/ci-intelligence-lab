@@ -1,0 +1,36 @@
+pipeline:
+  name: pipeline_shibam17_ci_intelligence_lab_build_cf9f
+  clone:
+    enabled: true
+  stages:
+    - id: build_and_test
+      name: build-and-test
+      runtime: cloud
+      clone:
+        enabled: true
+      cache:
+        enabled: true
+      build-intelligence:
+        enabled: true
+      steps:
+        - id: build
+          name: Build
+          run:
+            container:
+              image: maven:3.9-eclipse-temurin-17
+            shell: bash
+            script: mvn -B -Dmaven.repo.local=/harness/.m2/repository -DskipTests clean compile
+        - id: test
+          name: Test
+          run:
+            container:
+              image: maven:3.9-eclipse-temurin-17
+            shell: bash
+            script: mvn -B -Dmaven.repo.local=/harness/.m2/repository test
+            report:
+              type: junit
+              paths:
+                - target/surefire-reports/*.xml
+  identifier: pipeline_shibam17_ci_intelligence_lab_build_cf9f
+  tags:
+    onboarding: "true"

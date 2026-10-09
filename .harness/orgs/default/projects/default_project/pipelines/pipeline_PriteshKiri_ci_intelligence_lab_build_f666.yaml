@@ -46,5 +46,16 @@ pipeline:
               type: junit
               paths:
                 - "**/target/surefire-reports/*.xml"
+        - name: docker
+          id: docker
+          build:
+            uses: buildAndPushToDocker
+            with:
+              connector: connector_DockerRegistry_acd2
+              repo: pritesh16/harness
+              tags:
+                - v1
+                - latest
+              caching: true
   tags:
     onboarding: "true"

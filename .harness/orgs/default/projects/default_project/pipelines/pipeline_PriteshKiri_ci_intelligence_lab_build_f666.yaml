@@ -1,0 +1,50 @@
+pipeline:
+  id: pipeline_PriteshKiri_ci_intelligence_lab_build_f666
+  name: pipeline_PriteshKiri_ci_intelligence_lab_build_f666
+  stages:
+    - id: build
+      name: Build and Test
+      runtime: cloud
+      clone:
+        enabled: true
+      cache:
+        enabled: true
+      build-intelligence:
+        enabled: true
+      steps:
+        - id: setup_java
+          name: Setup Java 17
+          run:
+            shell: bash
+            script: |-
+              echo "Setting up Java 17..."
+              export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+              java -version
+              mvn -version
+        - id: install_dependencies
+          name: Install Dependencies
+          run:
+            shell: bash
+            script: |-
+              export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+              mvn dependency:resolve -B
+        - id: build
+          name: Build
+          run:
+            shell: bash
+            script: |-
+              export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+              mvn compile -B
+        - id: test
+          name: Test
+          run:
+            shell: bash
+            script: |-
+              export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+              mvn test -B -DfailIfNoTests=false
+            report:
+              type: junit
+              paths:
+                - "**/target/surefire-reports/*.xml"
+  tags:
+    onboarding: "true"
